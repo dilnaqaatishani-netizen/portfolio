@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Facts Fervor</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0d0d0d; --surface: #161616; --card: #1c1c1c; --border: #2a2a2a;
+      --accent: #e8ff3c; --accent2: #ff4d6d; --text: #f0f0f0; --muted: #888;
+      --font-display: 'Bebas Neue', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --font-serif: 'Playfair Display', serif;
+    }
+    body { background: var(--bg); color: var(--text); font-family: var(--font-body); line-height: 1.6; }
+    nav {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1.2rem 2.5rem; border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; background: rgba(13,13,13,0.92);
+      backdrop-filter: blur(10px); z-index: 100;
+    }
+    .logo { font-family: var(--font-display); font-size: 2rem; letter-spacing: 3px; color: var(--accent); text-decoration: none; }
+    .logo span { color: var(--accent2); }
+    nav ul { list-style: none; display: flex; gap: 2rem; }
+    nav ul a { color: var(--muted); text-decoration: none; font-size: 0.85rem; font-weight: 500; letter-spacing: 1px; text-transform: uppercase; transition: color 0.2s; }
+    nav ul a:hover { color: var(--accent); }
+    .hero { padding: 5rem 2.5rem 3rem; max-width: 1100px; margin: 0 auto; }
+    .hero-eyebrow { font-size: 0.75rem; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); font-weight: 600; margin-bottom: 1.2rem; }
+    .hero h1 { font-family: var(--font-display); font-size: clamp(3.5rem, 9vw, 7rem); line-height: 0.95; letter-spacing: 2px; margin-bottom: 1.5rem; }
+    .hero h1 em { font-family: var(--font-serif); color: var(--accent); font-style: italic; }
+    .hero-sub { font-size: 1rem; color: var(--muted); max-width: 520px; line-height: 1.8; margin-bottom: 2rem; }
+    .hero-cta { display: inline-block; background: var(--accent); color: #000; padding: 0.75rem 2rem; font-weight: 700; font-size: 0.85rem; letter-spacing: 1.5px; text-transform: uppercase; text-decoration: none; transition: background 0.2s, transform 0.2s; }
+    .hero-cta:hover { background: #fff; transform: translateY(-2px); }
+    .ticker-wrap { overflow: hidden; background: var(--accent); padding: 0.55rem 0; margin: 2rem 0 0; }
+    .ticker { display: flex; animation: ticker 28s linear infinite; white-space: nowrap; }
+    .ticker span { font-size: 0.75rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #000; padding: 0 2.5rem; }
+    .ticker span::after { content: "◆"; margin-left: 2.5rem; }
+    @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+    .section-header { display: flex; align-items: baseline; gap: 1rem; margin-bottom: 2rem; }
+    .section-header h2 { font-family: var(--font-display); font-size: 2.2rem; letter-spacing: 2px; }
+    .section-header .tag { font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; color: var(--accent2); border: 1px solid var(--accent2); padding: 0.2rem 0.6rem; }
+    .container { max-width: 1100px; margin: 0 auto; padding: 3.5rem 2.5rem; }
+    .blog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem; }
+    .card { background: var(--card); border: 1px solid var(--border); transition: border-color 0.25s, transform 0.25s; cursor: pointer; position: relative; overflow: hidden; }
+    .card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--accent); transform: scaleX(0); transform-origin: left; transition: transform 0.3s; }
+    .card:hover::before { transform: scaleX(1); }
+    .card:hover { border-color: #3a3a3a; transform: translateY(-4px); }
+    .card-img-placeholder { width: 100%; height: 190px; display: flex; align-items: center; justify-content: center; font-size: 3rem; }
+    .card-body { padding: 1.4rem; }
+    .card-meta { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem; }
+    .badge { font-size: 0.65rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 700; padding: 0.25rem 0.6rem; background: var(--accent); color: #000; }
+    .badge.hot { background: var(--accent2); color: #fff; }
+    .badge.new { background: #7c3aed; color: #fff; }
+    .badge.ai { background: #0ea5e9; color: #000; }
+    .card-date { font-size: 0.72rem; color: var(--muted); }
+    .card h3 { font-family: var(--font-display); font-size: 1.45rem; letter-spacing: 1px; line-height: 1.15; margin-bottom: 0.6rem; }
+    .card p { font-size: 0.85rem; color: var(--muted); line-height: 1.7; margin-bottom: 1.2rem; }
+    .card-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); padding-top: 1rem; }
+    .read-time { font-size: 0.72rem; color: var(--muted); }
+    .read-link { font-size: 0.75rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--accent); text-decoration: none; transition: color 0.2s; }
+    .read-link:hover { color: #fff; }
+    .featured-card { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--border); background: var(--card); position: relative; overflow: hidden; cursor: pointer; transition: border-color 0.25s; }
+    .featured-card::before { content: ''; position: absolute; top: 0; left: 0; bottom: 0; width: 4px; background: var(--accent); }
+    .featured-card:hover { border-color: #444; }
+    .featured-img { background: linear-gradient(135deg,#1a1a2e,#16213e,#0f3460); display: flex; align-items: center; justify-content: center; font-size: 5rem; min-height: 280px; }
+    .featured-body { padding: 2.2rem; display: flex; flex-direction: column; justify-content: center; }
+    .featured-eyebrow { font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); font-weight: 700; margin-bottom: 0.75rem; }
+    .featured-body h3 { font-family: var(--font-display); font-size: 2.4rem; letter-spacing: 1.5px; line-height: 1.05; margin-bottom: 1rem; }
+    .featured-body p { font-size: 0.9rem; color: var(--muted); line-height: 1.75; margin-bottom: 1.5rem; }
+    .newsletter { background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--accent); padding: 3rem 2.5rem; text-align: center; max-width: 1100px; margin: 0 auto 3.5rem; }
+    .newsletter h3 { font-family: var(--font-display); font-size: 2.5rem; letter-spacing: 2px; margin-bottom: 0.5rem; }
+    .newsletter p { color: var(--muted); font-size: 0.9rem; margin-bottom: 1.5rem; }
+    .newsletter form { display: flex; max-width: 440px; margin: 0 auto; }
+    .newsletter input { flex: 1; background: var(--bg); border: 1px solid var(--border); border-right: none; padding: 0.8rem 1rem; color: var(--text); font-family: var(--font-body); font-size: 0.85rem; outline: none; }
+    .newsletter input:focus { border-color: var(--accent); }
+    .newsletter button { background: var(--accent); color: #000; border: none; padding: 0.8rem 1.5rem; font-weight: 700; font-size: 0.8rem; letter-spacing: 1.5px; text-transform: uppercase; cursor: pointer; transition: background 0.2s; }
+    .newsletter button:hover { background: #fff; }
+    footer { border-top: 1px solid var(--border); padding: 2rem 2.5rem; display: flex; justify-content: space-between; align-items: center; color: var(--muted); font-size: 0.78rem; }
+    footer .logo { font-size: 1.3rem; }
+
+    /* ===== MODAL ===== */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(6px); z-index: 999;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none; transition: opacity 0.3s;
+      padding: 1rem;
+    }
+    .modal-overlay.active { opacity: 1; pointer-events: all; }
+    .modal {
+      background: var(--surface); border: 1px solid var(--border);
+      max-width: 680px; width: 100%; max-height: 90vh;
+      overflow-y: auto; position: relative;
+      transform: translateY(30px); transition: transform 0.3s;
+    }
+    .modal-overlay.active .modal { transform: translateY(0); }
+    .modal-header { padding: 2rem 2rem 1.2rem; border-bottom: 1px solid var(--border); position: relative; }
+    .modal-emoji { font-size: 3rem; margin-bottom: 0.75rem; display: block; }
+    .modal-badge { display: inline-block; font-size: 0.65rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 700; padding: 0.25rem 0.6rem; margin-bottom: 0.75rem; }
+    .modal-header h2 { font-family: var(--font-display); font-size: 2.2rem; letter-spacing: 1.5px; line-height: 1.1; margin-bottom: 0.5rem; }
+    .modal-header .modal-date { font-size: 0.75rem; color: var(--muted); }
+    .modal-close {
+      position: absolute; top: 1.2rem; right: 1.2rem;
+      background: var(--card); border: 1px solid var(--border);
+      color: var(--text); width: 36px; height: 36px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: 1.1rem; transition: background 0.2s;
+    }
+    .modal-close:hover { background: var(--accent); color: #000; }
+    .modal-body { padding: 1.8rem 2rem; }
+    .modal-body .intro { font-size: 1rem; color: var(--text); line-height: 1.8; margin-bottom: 1.8rem; border-left: 3px solid var(--accent); padding-left: 1rem; }
+    .modal-section { margin-bottom: 1.6rem; }
+    .modal-section h4 { font-family: var(--font-display); font-size: 1.2rem; letter-spacing: 1px; color: var(--accent); margin-bottom: 0.75rem; }
+    .modal-section ul { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+    .modal-section ul li { font-size: 0.88rem; color: var(--muted); padding-left: 1.2rem; position: relative; line-height: 1.6; }
+    .modal-section ul li::before { content: "→"; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
+    .modal-section p { font-size: 0.88rem; color: var(--muted); line-height: 1.75; }
+    .modal-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.75rem; }
+    .modal-tag { font-size: 0.7rem; letter-spacing: 1px; text-transform: uppercase; padding: 0.3rem 0.7rem; border: 1px solid var(--border); color: var(--muted); }
+    .modal-salary { display: flex; gap: 1rem; margin-top: 0.75rem; flex-wrap: wrap; }
+    .salary-box { background: var(--card); border: 1px solid var(--border); padding: 0.8rem 1.2rem; flex: 1; min-width: 130px; }
+    .salary-box .label { font-size: 0.65rem; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); margin-bottom: 0.3rem; }
+    .salary-box .value { font-family: var(--font-display); font-size: 1.4rem; letter-spacing: 1px; color: var(--accent); }
+    .modal-footer { padding: 1.2rem 2rem; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+    .modal-read-time { font-size: 0.75rem; color: var(--muted); }
+    .modal-btn { background: var(--accent); color: #000; border: none; padding: 0.7rem 1.5rem; font-weight: 700; font-size: 0.8rem; letter-spacing: 1.5px; text-transform: uppercase; cursor: pointer; transition: background 0.2s; }
+    .modal-btn:hover { background: #fff; }
+
+    @media (max-width: 768px) {
+      nav ul { display: none; }
+      .featured-card { grid-template-columns: 1fr; }
+      .featured-img { min-height: 180px; font-size: 3.5rem; }
+      .newsletter form { flex-direction: column; }
+      .newsletter input { border-right: 1px solid var(--border); border-bottom: none; }
+      footer { flex-direction: column; gap: 0.75rem; text-align: center; }
+      .modal-header h2 { font-size: 1.7rem; }
+      .modal-salary { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="#" class="logo">Facts<span>Fervor</span></a>
+    <ul>
+      <li><a href="#">Home</a></li>
+      <li><a href="#">Trending</a></li>
+      <li><a href="#">Skills</a></li>
+      <li><a href="#">About</a></li>
+    </ul>
+  </nav>
+
+  <section class="hero">
+    <p class="hero-eyebrow">Skills That Are Taking Over The World</p>
+    <h1>Master The<br/><em>Skills</em> Of<br/>Tomorrow</h1>
+    <p class="hero-sub">Facts Fervor digs into the hottest skills shaping careers in 2026 — from AI tools to no-code platforms. No fluff, just fervor.</p>
+    <a href="#blogs" class="hero-cta">Explore Skills →</a>
+    <div class="ticker-wrap">
+      <div class="ticker">
+        <span>AI Prompting</span><span>Data Analysis</span><span>No-Code Tools</span>
+        <span>Cybersecurity</span><span>Video Editing</span><span>Prompt Engineering</span>
+        <span>Cloud Computing</span><span>UX Design</span><span>Personal Branding</span>
+        <span>Emotional Intelligence</span><span>Financial Literacy</span><span>Freelancing</span>
+        <span>AI Prompting</span><span>Data Analysis</span><span>No-Code Tools</span>
+        <span>Cybersecurity</span><span>Video Editing</span><span>Prompt Engineering</span>
+        <span>Cloud Computing</span><span>UX Design</span><span>Personal Branding</span>
+        <span>Emotional Intelligence</span><span>Financial Literacy</span><span>Freelancing</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="container" id="blogs">
+    <div class="section-header">
+      <h2>Trending Skills</h2>
+      <span class="tag">🔥 June 2026</span>
+    </div>
+    <div class="blog-grid">
+
+      <article class="featured-card" onclick="openModal('prompt')">
+        <div class="featured-img">🤖</div>
+        <div class="featured-body">
+          <p class="featured-eyebrow">⭐ Editor's Pick · AI</p>
+          <h3>Prompt Engineering Is The New Coding</h3>
+          <p>Companies are paying top salaries for people who can talk to AI effectively. Here's why prompt engineering is the most underrated skill of 2026.</p>
+          <span class="read-link">Read Full Post →</span>
+        </div>
+      </article>
+
+      <article class="card" onclick="openModal('data')">
+        <div class="card-img-placeholder" style="background:linear-gradient(135deg,#1a1a2e,#4a0e8f);">📊</div>
+        <div class="card-body">
+          <div class="card-meta"><span class="badge hot">🔥 Hot</span><span class="card-date">June 10, 2026</span></div>
+          <h3>Data Analysis With Python & AI</h3>
+          <p>Python + ChatGPT is replacing entire analyst teams. Learn the exact stack companies are hiring for right now.</p>
+          <div class="card-footer"><span class="read-time">⏱ 7 min read</span><span class="read-link">Read →</span></div>
+        </div>
+      </article>
+
+      <article class="card" onclick="openModal('cloud')">
+        <div class="card-img-placeholder" style="background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);">☁️</div>
+        <div class="card-body">
+          <div class="card-meta"><span class="badge ai">Cloud</span><span class="card-date">June 8, 2026</span></div>
+          <h3>Cloud Computing Skills Every Dev Needs</h3>
+          <p>AWS, Azure, or GCP? We break down which certifications are worth your time and money in 2026.</p>
+          <div class="card-footer"><span class="read-time">⏱ 9 min read</span><span class="read-link">Read →</span></div>
+        </div>
+      </article>
+
+      <article class="card" onclick="openModal('video')">
+        <div class="card-img-placeholder" style="background:linear-gradient(135deg,#1f0033,#6a0572);">🎬</div>
+        <div class="card-body">
+          <div class="card-meta"><span class="badge new">New</span><span class="card-date">June 5, 2026</span></div>
+          <h3>AI Video Editing Is Exploding</h3>
+          <p>Tools like Runway and Kling are changing what one-person studios can create.</p>
+          <div class="card-footer"><span class="read-time">⏱ 6 min read</span><span class="read-link">Read →</span></div>
+        </div>
+      </article>
+
+      <article class="card" onclick="openModal('cyber')">
+        <div class="card-img-placeholder" style="background:linear-gradient(135deg,#0a2342,#1a5c38);">🔐</div>
+        <div class="card-body">
+          <div class="card-meta"><span class="badge hot">🔥 Hot</span><span class="card-date">June 3, 2026</span></div>
+          <h3>Cybersecurity: The Recession-Proof Skill</h3>
+          <p>Cyber threats are rising and companies can't hire fast enough. Start with just three certifications.</p>
+          <div class="card-footer"><span class="read-time">⏱ 8 min read</span><span class="read-link">Read →</span></div>
+        </div>
+      </article>
+
+      <article class="card" onclick="openModal('nocode')">
+        <div class="card-img-placeholder" style="background:linear-gradient(135deg,#2d1b00,#8b5e00);">⚡</div>
+        <div class="card-body">
+          <div class="card-meta"><span class="badge" style="background:#f59e0b;color:#000;">No-Code</span><span class="card-date">June 1, 2026</span></div>
+          <h3>No-Code Tools That Pay Real Money</h3>
+          <p>Bubble, Webflow, Make — build apps without writing a single line of code.</p>
+          <div class="card-footer"><span class="read-time">⏱ 5 min read</span><span class="read-link">Read →</span></div>
+        </div>
+      </article>
+
+      <article class="card" onclick="openModal('ux')">
+        <div class="card-img-placeholder" style="background:linear-gradient(135deg,#002b4a,#00607a);">🎨</div>
+        <div class="card-body">
+          <div class="card-meta"><span class="badge new">New</span><span class="card-date">May 28, 2026</span></div>
+          <h3>UX Design: Still Worth Learning In 2026?</h3>
+          <p>With AI generating UIs on command, human-centered design thinking matters more than ever.</p>
+          <div class="card-footer"><span class="read-time">⏱ 10 min read</span><span class="read-link">Read →</span></div>
+        </div>
+      </article>
+
+      <article class="card" onclick="openModal('agentic')">
+        <div class="card-img-placeholder" style="background:linear-gradient(135deg,#0d0d0d,#1a0533,#3d0066);">🧠</div>
+        <div class="card-body">
+          <div class="card-meta"><span class="badge hot">🔥 2026</span><span class="card-date">June 12, 2026</span></div>
+          <h3>Agentic AI — The Skill Nobody Talks About</h3>
+          <p>AI agents are running businesses autonomously. Knowing how to direct them is the #1 non-code skill.</p>
+          <div class="card-footer"><span class="read-time">⏱ 8 min read</span><span class="read-link">Read →</span></div>
+        </div>
+      </article>
+
+      <article class="card" onclick="openModal('content')">
+        <div class="card-img-placeholder" style="background:linear-gradient(135deg,#1a0a00,#7a2e00,#c45000);">📱</div>
+        <div class="card-body">
+          <div class="card-meta"><span class="badge new">Trending</span><span class="card-date">June 10, 2026</span></div>
+          <h3>Content Strategy In The Age Of AI</h3>
+          <p>Anyone can generate content now — but very few can strategize it. This skill AI cannot replace.</p>
+          <div class="card-footer"><span class="read-time">⏱ 6 min read</span><span class="read-link">Read →</span></div>
+        </div>
+      </article>
+
+      <article class="card" onclick="openModal('ailiteracy')">
+        <div class="card-img-placeholder" style="background:linear-gradient(135deg,#001a10,#004d2e,#007a49);">🧩</div>
+        <div class="card-body">
+          <div class="card-meta"><span class="badge" style="background:#10b981;color:#000;">Must Have</span><span class="card-date">June 8, 2026</span></div>
+          <h3>AI Literacy + Critical Thinking</h3>
+          <p>Companies want people who can question AI outputs, spot hallucinations and make smart decisions.</p>
+          <div class="card-footer"><span class="read-time">⏱ 7 min read</span><span class="read-link">Read →</span></div>
+        </div>
+      </article>
+
+      <article class="card" onclick="openModal('brand')">
+        <div class="card-img-placeholder" style="background:linear-gradient(135deg,#1a0022,#5a0080,#9000cc);">👤</div>
+        <div class="card-body">
+          <div class="card-meta"><span class="badge hot">🔥 Hot</span><span class="card-date">June 14, 2026</span></div>
+          <h3>Personal Branding On LinkedIn & Beyond</h3>
+          <p>Your online presence is your resume. People who build a personal brand get hired without applying.</p>
+          <div class="card-footer"><span class="read-time">⏱ 6 min read</span><span class="read-link">Read →</span></div>
+        </div>
+      </article>
+
+      <article class="card" onclick="openModal('eq')">
+        <div class="card-img-placeholder" style="background:linear-gradient(135deg,#1a0a00,#8b1a00,#cc2200);">❤️</div>
+        <div class="card-body">
+          <div class="card-meta"><span class="badge" style="background:#ef4444;color:#fff;">Human Skill</span><span class="card-date">June 13, 2026</span></div>
+          <h3>Emotional Intelligence — AI Can't Fake This</h3>
+          <p>Empathy, self-awareness and conflict resolution — the most human skills are now the rarest.</p>
+          <div class="card-footer"><span class="read-time">⏱ 5 min read</span><span class="read-link">Read →</span></div>
+        </div>
+      </article>
+
+      <article class="card" onclick="openModal('shortform')">
+        <div class="card-img-placeholder" style="background:linear-gradient(135deg,#00001a,#000066,#0000cc);">🎥</div>
+        <div class="card-body">
+          <div class="card-meta"><span class="badge new">New</span><span class="card-date">June 12, 2026</span></div>
+          <h3>Short-Form Video Marketing</h3>
+          <p>Reels, Shorts, TikToks — creators who understand hooks and retention in 60 seconds are earning big.</p>
+          <div class="card-footer"><span class="read-time">⏱ 7 min read</span><span class="read-link">Read →</span></div>
+        </div>
+      </article>
+
+      <article class="card" onclick="openModal('sales')">
+        <div class="card-img-placeholder" style="background:linear-gradient(135deg,#0a1a00,#2a5200,#3d7a00);">🤝</div>
+        <div class="card-body">
+          <div class="card-meta"><span class="badge" style="background:#84cc16;color:#000;">Evergreen</span><span class="card-date">June 11, 2026</span></div>
+          <h3>Sales & Negotiation Skills</h3>
+          <p>Knowing how to pitch, persuade and close is a skill that pays for itself within days of learning.</p>
+          <div class="card-footer"><span class="read-time">⏱ 8 min read</span><span class="read-link">Read →</span></div>
+        </div>
+      </article>
+
+      <article class="card" onclick="openModal('pm')">
+        <div class="card-img-placeholder" style="background:linear-gradient(135deg,#001a1a,#005252,#007a7a);">📋</div>
+        <div class="card-body">
+          <div class="card-meta"><span class="badge ai">In Demand</span><span class="card-date">June 10, 2026</span></div>
+          <h3>AI-Powered Project Management</h3>
+          <p>Managers who combine classic PM skills with AI tools are leading the most efficient teams of 2026.</p>
+          <div class="card-footer"><span class="read-time">⏱ 7 min read</span><span class="read-link">Read →</span></div>
+        </div>
+      </article>
+
+      <article class="card" onclick="openModal('speak')">
+        <div class="card-img-placeholder" style="background:linear-gradient(135deg,#1a1100,#664400,#996600);">🎤</div>
+        <div class="card-body">
+          <div class="card-meta"><span class="badge hot">🔥 Hot</span><span class="card-date">June 9, 2026</span></div>
+          <h3>Public Speaking & Communication</h3>
+          <p>The ability to speak confidently on camera is one of the highest-paid soft skills of the decade.</p>
+          <div class="card-footer"><span class="read-time">⏱ 6 min read</span><span class="read-link">Read →</span></div>
+        </div>
+      </article>
+
+      <article class="card" onclick="openModal('finance')">
+        <div class="card-img-placeholder" style="background:linear-gradient(135deg,#001100,#003300,#005500);">💰</div>
+        <div class="card-body">
+          <div class="card-meta"><span class="badge" style="background:#22c55e;color:#000;">Must Know</span><span class="card-date">June 8, 2026</span></div>
+          <h3>Financial Literacy For The Modern Age</h3>
+          <p>Budgeting, investing, taxes — financial literacy separates people who work for money vs those who don't.</p>
+          <div class="card-footer"><span class="read-time">⏱ 9 min read</span><span class="read-link">Read →</span></div>
+        </div>
+      </article>
+
+      <article class="card" onclick="openModal('freelance')">
+        <div class="card-img-placeholder" style="background:linear-gradient(135deg,#1a001a,#4d004d,#800080);">💼</div>
+        <div class="card-body">
+          <div class="card-meta"><span class="badge new">Rising</span><span class="card-date">June 7, 2026</span></div>
+          <h3>Freelancing & Client Management</h3>
+          <p>Learn how top freelancers in 2026 build retainer-based income streams and keep clients coming back.</p>
+          <div class="card-footer"><span class="read-time">⏱ 8 min read</span><span class="read-link">Read →</span></div>
+        </div>
+      </article>
+
+      <article class="card" onclick="openModal('design')">
+        <div class="card-img-placeholder" style="background:linear-gradient(135deg,#1a0033,#33006b,#6600cc);">🎨</div>
+        <div class="card-body">
+          <div class="card-meta"><span class="badge" style="background:#a855f7;color:#fff;">Creative</span><span class="card-date">June 6, 2026</span></div>
+          <h3>Graphic Design × AI Tools</h3>
+          <p>Canva AI, Adobe Firefly, Midjourney — designers blending AI tools are producing work 10x faster.</p>
+          <div class="card-footer"><span class="read-time">⏱ 6 min read</span><span class="read-link">Read →</span></div>
+        </div>
+      </article>
+
+      <article class="card" onclick="openModal('mental')">
+        <div class="card-img-placeholder" style="background:linear-gradient(135deg,#001a0d,#00402a,#006644);">🧘</div>
+        <div class="card-body">
+          <div class="card-meta"><span class="badge" style="background:#06b6d4;color:#000;">Wellness</span><span class="card-date">June 5, 2026</span></div>
+          <h3>Mental Health & High Performance</h3>
+          <p>Individuals who master sleep, focus and stress management consistently outperform peers with more talent.</p>
+          <div class="card-footer"><span class="read-time">⏱ 7 min read</span><span class="read-link">Read →</span></div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <div class="newsletter">
+    <h3>Stay Ahead Of The Curve</h3>
+    <p>Get the week's most important skill trends — every Monday. No spam, ever.</p>
+    <form onsubmit="return false;">
+      <input type="email" placeholder="your@email.com" />
+      <button type="submit">Subscribe</button>
+    </form>
+  </div>
+
+  <footer>
+    <a href="#" class="logo">Facts<span style="color:var(--accent2)">Fervor</span></a>
+    <p>© 2026 Facts Fervor · Built with curiosity & caffeine ☕</p>
+  </footer>
+
+  <!-- MODAL -->
+  <div class="modal-overlay" id="modalOverlay" onclick="closeOnOverlay(event)">
+    <div class="modal" id="modal">
+      <div class="modal-header">
+        <span class="modal-emoji" id="mEmoji"></span>
+        <div class="modal-badge" id="mBadge"></div>
+        <h2 id="mTitle"></h2>
+        <div class="modal-date" id="mDate"></div>
+        <button class="modal-close" onclick="closeModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <p class="intro" id="mIntro"></p>
+        <div class="modal-section">
+          <h4>What You'll Learn</h4>
+          <ul id="mLearn"></ul>
+        </div>
+        <div class="modal-section">
+          <h4>Top Tools & Resources</h4>
+          <ul id="mTools"></ul>
+        </div>
+        <div class="modal-section">
+          <h4>Why It's Trending In 2026</h4>
+          <p id="mWhy"></p>
+        </div>
+        <div class="modal-section">
+          <h4>Salary Range (2026)</h4>
+          <div class="modal-salary">
+            <div class="salary-box"><div class="label">Entry Level</div><div class="value" id="mSal1"></div></div>
+            <div class="salary-box"><div class="label">Mid Level</div><div class="value" id="mSal2"></div></div>
+            <div class="salary-box"><div class="label">Expert Level</div><div class="value" id="mSal3"></div></div>
+          </div>
+        </div>
+        <div class="modal-section">
+          <h4>Related Skills</h4>
+          <div class="modal-tags" id="mTags"></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <span class="modal-read-time" id="mReadTime"></span>
+        <button class="modal-btn" onclick="closeModal()">Close ✕</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const skills = {
+      prompt: {
+        emoji: "🤖", badge: "⭐ Editor's Pick", badgeColor: "#e8ff3c", badgeText: "#000",
+        title: "Prompt Engineering Is The New Coding",
+        date: "June 15, 2026", readTime: "⏱ 10 min read",
+        intro: "Prompt engineering is the art and science of communicating with AI models to get precise, high-quality outputs. In 2026, companies are paying six-figure salaries for people who master this — no coding degree required.",
+        learn: ["How to write clear, structured prompts for any AI tool","Chain-of-thought and few-shot prompting techniques","System prompt design for business automation","How to reduce hallucinations and improve AI accuracy"],
+        tools: ["ChatGPT, Claude, Gemini — the big three AI models","PromptBase — marketplace to buy/sell prompts","LangChain — for building prompt pipelines","Anthropic Prompt Library — free templates"],
+        why: "Every company is adopting AI tools but most employees don't know how to use them effectively. People who can bridge that gap — translating business goals into precise AI instructions — are becoming indispensable overnight.",
+        sal: ["₹4–8 LPA", "₹12–20 LPA", "₹30+ LPA"],
+        tags: ["AI Tools", "LLMs", "Automation", "ChatGPT", "Claude"]
+      },
+      data: {
+        emoji: "📊", badge: "🔥 Hot", badgeColor: "#ff4d6d", badgeText: "#fff",
+        title: "Data Analysis With Python & AI",
+        date: "June 10, 2026", readTime: "⏱ 7 min read",
+        intro: "Data is the oil of 2026 — but raw data means nothing without someone to make sense of it. Python combined with AI tools has made data analysis faster and more powerful than ever before.",
+        learn: ["Python basics — Pandas, NumPy, Matplotlib","Using AI to auto-generate analysis and charts","Reading dashboards and storytelling with data","SQL fundamentals for data querying"],
+        tools: ["Python + Jupyter Notebook","ChatGPT Code Interpreter for instant analysis","Tableau & Power BI for visualization","Google Colab — free cloud coding environment"],
+        why: "Companies are drowning in data but starving for insight. A person who can take a messy dataset and turn it into a clear business decision is worth more than an entire reporting team.",
+        sal: ["₹5–9 LPA", "₹14–22 LPA", "₹35+ LPA"],
+        tags: ["Python", "SQL", "Tableau", "Machine Learning", "Statistics"]
+      },
+      cloud: {
+        emoji: "☁️", badge: "Cloud", badgeColor: "#0ea5e9", badgeText: "#000",
+        title: "Cloud Computing Skills Every Dev Needs",
+        date: "June 8, 2026", readTime: "⏱ 9 min read",
+        intro: "Every app, website, and AI tool runs on cloud infrastructure. AWS, Azure, and GCP are the backbone of the modern internet — and people who can manage them are never out of work.",
+        learn: ["Core cloud concepts — servers, storage, networking","AWS or Azure certification roadmap","Deploying and managing cloud applications","Cost optimization and cloud security basics"],
+        tools: ["AWS Free Tier — practice without paying","Microsoft Azure Learn — free certifications","Google Cloud Skills Boost","A Cloud Guru — best cloud training platform"],
+        why: "Cloud spending crossed $1 trillion globally in 2025. Every company is migrating to cloud — retail, healthcare, government. There are simply not enough certified professionals to fill the roles.",
+        sal: ["₹6–10 LPA", "₹16–28 LPA", "₹40+ LPA"],
+        tags: ["AWS", "Azure", "DevOps", "Linux", "Networking"]
+      },
+      video: {
+        emoji: "🎬", badge: "New", badgeColor: "#7c3aed", badgeText: "#fff",
+        title: "AI Video Editing Is Exploding",
+        date: "June 5, 2026", readTime: "⏱ 6 min read",
+        intro: "AI has turned video production upside down. What used to take a team of 10 people and weeks of work can now be done by one person in a weekend. The skill is knowing which tools to use and how to direct them.",
+        learn: ["AI-assisted video editing workflow","Using Runway, Kling, and Sora for generation","Voice cloning and AI dubbing techniques","Color grading and post-production with AI"],
+        tools: ["Runway ML — AI video generation and editing","Kling AI — realistic video from text","CapCut AI — mobile-first editing","Adobe Premiere with AI Sensei features"],
+        why: "Content consumption has never been higher — YouTube, Instagram, LinkedIn all reward video creators. But production costs kept most businesses out. AI has removed that barrier completely.",
+        sal: ["₹3–6 LPA", "₹10–18 LPA", "₹25+ LPA"],
+        tags: ["Runway", "Adobe Premiere", "Storytelling", "Motion Graphics", "YouTube"]
+      },
+      cyber: {
+        emoji: "🔐", badge: "🔥 Hot", badgeColor: "#ff4d6d", badgeText: "#fff",
+        title: "Cybersecurity: The Recession-Proof Skill",
+        date: "June 3, 2026", readTime: "⏱ 8 min read",
+        intro: "Cybercrime damages are projected to cost the world $10.5 trillion annually by 2025. Companies cannot hire security professionals fast enough. This is one of the few careers that is truly recession-proof.",
+        learn: ["Network security fundamentals and threat detection","Ethical hacking and penetration testing basics","CompTIA Security+ certification path","Incident response and forensics"],
+        tools: ["Kali Linux — ethical hacking OS","Wireshark — network packet analysis","TryHackMe — gamified cybersecurity learning","CompTIA CertMaster — certification prep"],
+        why: "Every data breach, ransomware attack, and phishing scam creates more demand for security talent. AI is also creating new attack vectors that require human defenders to counter them.",
+        sal: ["₹5–10 LPA", "₹15–25 LPA", "₹40+ LPA"],
+        tags: ["Ethical Hacking", "Network Security", "CompTIA", "SOC", "Penetration Testing"]
+      },
+      nocode: {
+        emoji: "⚡", badge: "No-Code", badgeColor: "#f59e0b", badgeText: "#000",
+        title: "No-Code Tools That Pay Real Money",
+        date: "June 1, 2026", readTime: "⏱ 5 min read",
+        intro: "No-code has matured from a toy into a serious business tool. Entrepreneurs and freelancers are building real products and charging real money — without writing a single line of code.",
+        learn: ["Building web apps with Bubble","Creating automations with Make (formerly Integromat)","Designing websites on Webflow","Connecting APIs without code using Zapier"],
+        tools: ["Bubble — full-stack app builder","Webflow — professional website builder","Make — visual automation platform","Glide — turn spreadsheets into apps"],
+        why: "Small businesses and startups need digital solutions but can't afford developers. No-code experts fill this gap and charge premium rates. The barrier to entry is low but the demand is very high.",
+        sal: ["₹3–5 LPA", "₹8–15 LPA", "₹20+ LPA (freelance unlimited)"],
+        tags: ["Bubble", "Webflow", "Zapier", "Make", "Automation"]
+      },
+      ux: {
+        emoji: "🎨", badge: "New", badgeColor: "#7c3aed", badgeText: "#fff",
+        title: "UX Design: Still Worth Learning In 2026?",
+        date: "May 28, 2026", readTime: "⏱ 10 min read",
+        intro: "AI can generate interfaces but it cannot understand human behavior, emotions, and psychology the way a trained UX designer can. User experience design is evolving — not dying.",
+        learn: ["User research and usability testing","Wireframing and prototyping in Figma","Design systems and component libraries","Accessibility and inclusive design principles"],
+        tools: ["Figma — industry standard design tool","Maze — user testing platform","Hotjar — heatmaps and session recordings","Google UX Design Certificate on Coursera"],
+        why: "As AI floods the market with low-quality interfaces, companies that invest in human-centered design stand out dramatically. The gap between average and great UX has never been more valuable.",
+        sal: ["₹4–8 LPA", "₹12–20 LPA", "₹30+ LPA"],
+        tags: ["Figma", "User Research", "Prototyping", "Accessibility", "Design Systems"]
+      },
+      agentic: {
+        emoji: "🧠", badge: "🔥 2026", badgeColor: "#ff4d6d", badgeText: "#fff",
+        title: "Agentic AI — The Skill Nobody Talks About",
+        date: "June 12, 2026", readTime: "⏱ 8 min read",
+        intro: "AI agents are software programs that can take actions, make decisions, and complete multi-step tasks autonomously. In 2026, businesses are deploying agents to handle customer service, research, and operations — and they need humans to manage them.",
+        learn: ["What AI agents are and how they work","Designing agent workflows for business tasks","Monitoring and correcting agent behavior","Building agents with tools like AutoGPT and CrewAI"],
+        tools: ["AutoGPT — autonomous AI agent framework","CrewAI — multi-agent orchestration","n8n — visual workflow automation with AI","Claude & GPT-4 APIs for custom agents"],
+        why: "Agentic AI is the next wave after chatbots. Companies that deploy well-designed agents can automate entire departments. The people who understand how to architect and oversee these systems are commanding premium salaries.",
+        sal: ["₹8–14 LPA", "₹20–35 LPA", "₹50+ LPA"],
+        tags: ["AutoGPT", "CrewAI", "Automation", "LLMs", "Workflow Design"]
+      },
+      content: {
+        emoji: "📱", badge: "Trending", badgeColor: "#7c3aed", badgeText: "#fff",
+        title: "Content Strategy In The Age Of AI",
+        date: "June 10, 2026", readTime: "⏱ 6 min read",
+        intro: "AI generates infinite content — but most of it is forgettable. The humans who win in 2026 are those who know how to build content ecosystems: the right message, for the right audience, at the right time.",
+        learn: ["Audience research and persona building","Content calendar planning and distribution strategy","SEO fundamentals and keyword strategy","Analytics — measuring what actually works"],
+        tools: ["Notion AI — content planning and writing","Semrush / Ahrefs — SEO and keyword research","Buffer / Hootsuite — content scheduling","Google Analytics 4 — performance tracking"],
+        why: "The internet is flooded with AI-generated noise. Brands are desperate for strategists who can cut through with intentional, audience-first content. Strategy is the one thing AI cannot do alone.",
+        sal: ["₹4–7 LPA", "₹10–18 LPA", "₹25+ LPA"],
+        tags: ["SEO", "Social Media", "Copywriting", "Email Marketing", "Brand Voice"]
+      },
+      ailiteracy: {
+        emoji: "🧩", badge: "Must Have", badgeColor: "#10b981", badgeText: "#000",
+        title: "AI Literacy + Critical Thinking",
+        date: "June 8, 2026", readTime: "⏱ 7 min read",
+        intro: "Knowing how to use AI is no longer enough. In 2026, the most valuable employees are those who can evaluate AI outputs critically — spotting errors, biases, and hallucinations before they cause real damage.",
+        learn: ["How large language models work at a basic level","How to fact-check and verify AI outputs","Recognizing bias and hallucinations in AI responses","When to trust AI and when to override it"],
+        tools: ["Perplexity AI — AI with source citations","Google Fact Check Tools","OpenAI Evals — testing AI model behavior","MIT OpenCourseWare — AI ethics and literacy"],
+        why: "Companies that deployed AI blindly in 2023-24 made costly mistakes. Now they want people who can be the human in the loop — smart enough to leverage AI but wise enough to catch its failures.",
+        sal: ["₹5–9 LPA", "₹14–22 LPA", "₹30+ LPA"],
+        tags: ["Critical Thinking", "AI Ethics", "Fact Checking", "Decision Making", "LLMs"]
+      },
+      brand: {
+        emoji: "👤", badge: "🔥 Hot", badgeColor: "#ff4d6d", badgeText: "#fff",
+        title: "Personal Branding On LinkedIn & Beyond",
+        date: "June 14, 2026", readTime: "⏱ 6 min read",
+        intro: "In 2026, your digital presence is your most powerful career asset. A strong personal brand on LinkedIn, YouTube, or X can open doors that a resume never could — from job offers to consulting clients to speaking gigs.",
+        learn: ["Defining your niche and unique point of view","Writing LinkedIn posts that get engagement","Building an audience through consistent content","Turning followers into clients or job opportunities"],
+        tools: ["LinkedIn — the #1 professional platform","Canva — creating visual content quickly","Taplio — LinkedIn growth analytics","Beehiiv — for starting a newsletter"],
+        why: "Recruiters and clients Google you before they call you. In a world where AI writes generic content everywhere, authentic personal brands built on real expertise and personality stand out dramatically.",
+        sal: ["₹3–6 LPA", "₹10–20 LPA", "₹40+ LPA (personal brand + consulting)"],
+        tags: ["LinkedIn", "Content Creation", "Networking", "Newsletter", "Thought Leadership"]
+      },
+      eq: {
+        emoji: "❤️", badge: "Human Skill", badgeColor: "#ef4444", badgeText: "#fff",
+        title: "Emotional Intelligence — AI Can't Fake This",
+        date: "June 13, 2026", readTime: "⏱ 5 min read",
+        intro: "As AI handles more analytical and repetitive tasks, the skills that remain uniquely human are becoming the most valuable. Emotional intelligence — the ability to understand and manage emotions in yourself and others — is at the top of that list.",
+        learn: ["Self-awareness and emotional regulation techniques","Empathy and active listening in professional settings","Conflict resolution and difficult conversations","Building trust and psychological safety in teams"],
+        tools: ["Coursera — EQ and leadership courses","Headspace — mindfulness and emotional regulation","Books: Emotional Intelligence by Daniel Goleman","BetterUp — professional coaching platform"],
+        why: "Companies are automating everything they can. What's left — leadership, client relationships, team culture, negotiation — all require high EQ. Managers with strong emotional intelligence retain better teams and close better deals.",
+        sal: ["₹5–10 LPA", "₹15–28 LPA", "₹45+ LPA (leadership roles)"],
+        tags: ["Leadership", "Communication", "Empathy", "Team Management", "Conflict Resolution"]
+      },
+      shortform: {
+        emoji: "🎥", badge: "New", badgeColor: "#7c3aed", badgeText: "#fff",
+        title: "Short-Form Video Marketing",
+        date: "June 12, 2026", readTime: "⏱ 7 min read",
+        intro: "The average human attention span online is now under 8 seconds. Brands that can capture attention in the first 3 seconds of a video and hold it for 60 seconds are winning the internet in 2026.",
+        learn: ["Hook writing — the first 3 seconds matter most","Video structure: hook, value, call-to-action","Platform-specific optimization (Reels vs Shorts vs TikTok)","Using AI tools to speed up video production"],
+        tools: ["CapCut — AI-powered mobile editing","Descript — edit video by editing text","VidIQ — YouTube analytics and optimization","Canva Video — quick branded content"],
+        why: "Short-form video drives more engagement than any other content type on every platform. Instagram Reels get 22% more interaction than regular posts. Brands are shifting entire marketing budgets to video creators.",
+        sal: ["₹3–5 LPA", "₹8–15 LPA", "₹30+ LPA (top creators earn crores)"],
+        tags: ["Instagram Reels", "YouTube Shorts", "TikTok", "CapCut", "Storytelling"]
+      },
+      sales: {
+        emoji: "🤝", badge: "Evergreen", badgeColor: "#84cc16", badgeText: "#000",
+        title: "Sales & Negotiation Skills",
+        date: "June 11, 2026", readTime: "⏱ 8 min read",
+        intro: "Sales is the oldest skill in the world — and in 2026 it's more valuable than ever. Whether you're a freelancer closing clients, a founder raising money, or an employee negotiating a raise, sales skills pay dividends forever.",
+        learn: ["Understanding buyer psychology and decision making","Cold outreach — email, LinkedIn, calls that work","Objection handling and closing techniques","Salary and contract negotiation tactics"],
+        tools: ["HubSpot CRM — free sales management","Apollo.io — B2B outreach and prospecting","Gong — AI sales call analysis","Books: Never Split the Difference by Chris Voss"],
+        why: "AI is taking over support, admin, and even basic analysis roles — but nobody has automated the relationship-driven parts of sales yet. Human trust, persuasion, and empathy remain at the core of every deal.",
+        sal: ["₹4–8 LPA + commission", "₹15–30 LPA + commission", "₹50+ LPA (top performers)"],
+        tags: ["B2B Sales", "Negotiation", "CRM", "Cold Outreach", "Client Relations"]
+      },
+      pm: {
+        emoji: "📋", badge: "In Demand", badgeColor: "#0ea5e9", badgeText: "#000",
+        title: "AI-Powered Project Management",
+        date: "June 10, 2026", readTime: "⏱ 7 min read",
+        intro: "Project management in 2026 is not just about tracking tasks and timelines — it's about using AI tools to forecast risks, automate reporting, and keep distributed global teams aligned in real time.",
+        learn: ["Agile and Scrum fundamentals","Using Notion AI and ClickUp for smart project tracking","Risk management and stakeholder communication","Leading remote and hybrid teams effectively"],
+        tools: ["Notion AI — AI-powered workspace","ClickUp — all-in-one project management","Linear — fast engineering project tracking","Slack + AI integrations for team communication"],
+        why: "Post-pandemic, most teams are remote or hybrid. Managing projects across time zones, with AI tools changing workflows monthly, requires a new kind of PM — one who is tech-savvy and people-smart simultaneously.",
+        sal: ["₹6–10 LPA", "₹15–25 LPA", "₹35+ LPA"],
+        tags: ["Agile", "Scrum", "Notion", "Remote Work", "Leadership"]
+      },
+      speak: {
+        emoji: "🎤", badge: "🔥 Hot", badgeColor: "#ff4d6d", badgeText: "#fff",
+        title: "Public Speaking & Communication",
+        date: "June 9, 2026", readTime: "⏱ 6 min read",
+        intro: "In a remote-first world where most meetings happen on camera, the ability to communicate with clarity and confidence has become a rare and highly valued skill. The best communicators don't just inform — they inspire action.",
+        learn: ["Structuring presentations for maximum impact","Voice modulation, pacing, and body language on camera","Storytelling frameworks for business presentations","Handling Q&A and thinking on your feet"],
+        tools: ["Toastmasters — the gold standard for public speaking practice","Orai — AI speech coach app","Canva Presentations — clean slide design","Loom — async video communication"],
+        why: "Every Zoom meeting, job interview, client pitch, and team update is a performance. People who communicate clearly get promoted faster, win more clients, and lead more effectively than equally skilled but less articulate peers.",
+        sal: ["₹4–8 LPA", "₹12–20 LPA", "₹40+ LPA (speakers + trainers earn far more)"],
+        tags: ["Presentations", "Storytelling", "Toastmasters", "Leadership", "On-Camera Presence"]
+      },
+      finance: {
+        emoji: "💰", badge: "Must Know", badgeColor: "#22c55e", badgeText: "#000",
+        title: "Financial Literacy For The Modern Age",
+        date: "June 8, 2026", readTime: "⏱ 9 min read",
+        intro: "Most people earn money their whole lives without understanding how it works. Financial literacy — knowing how to budget, invest, manage taxes, and build wealth — is the skill that separates financial stress from financial freedom.",
+        learn: ["Personal budgeting and the 50/30/20 rule","Basics of stock market, mutual funds, and SIPs","Understanding taxes — ITR filing in India","Emergency funds, insurance, and wealth-building habits"],
+        tools: ["Zerodha Varsity — free investing education","Groww / Zerodha — investing platforms","ET Money — financial planning app","Books: Rich Dad Poor Dad, The Psychology of Money"],
+        why: "Inflation, job uncertainty, and the gig economy mean that traditional job security is gone. People who understand money — how to save it, grow it, and protect it — are far more resilient to economic shocks.",
+        sal: ["Personal skill — saves/earns ₹2–10 LPA more", "Financial advisors: ₹8–18 LPA", "CFPs & wealth managers: ₹25+ LPA"],
+        tags: ["Investing", "Budgeting", "Taxes", "Mutual Funds", "Wealth Building"]
+      },
+      freelance: {
+        emoji: "💼", badge: "Rising", badgeColor: "#7c3aed", badgeText: "#fff",
+        title: "Freelancing & Client Management",
+        date: "June 7, 2026", readTime: "⏱ 8 min read",
+        intro: "More than 50% of the global workforce will have freelanced at some point by 2027. But the difference between a struggling freelancer and a thriving one is rarely skill — it's knowing how to find, close, and retain clients.",
+        learn: ["Building a freelance portfolio that converts","Pricing your services without underselling yourself","Writing proposals that win projects","Turning one-time clients into long-term retainers"],
+        tools: ["Upwork & Fiverr — starting points for beginners","Toptal — premium freelance platform","Bonsai — contracts, invoices, and client management","LinkedIn — best source of high-paying B2B clients"],
+        why: "The 9-to-5 is no longer the default. Top freelancers in 2026 earn more than salaried employees with the same skills — and they have freedom and flexibility that no company can offer.",
+        sal: ["₹3–6 LPA (starting)", "₹12–25 LPA (mid-level)", "₹40+ LPA (niche experts, unlimited ceiling)"],
+        tags: ["Upwork", "Fiverr", "Client Relations", "Proposals", "Remote Work"]
+      },
+      design: {
+        emoji: "🎨", badge: "Creative", badgeColor: "#a855f7", badgeText: "#fff",
+        title: "Graphic Design × AI Tools",
+        date: "June 6, 2026", readTime: "⏱ 6 min read",
+        intro: "The graphic design industry has been transformed by AI. Designers who have embraced AI tools are not being replaced — they are producing work at 10x the speed and winning clients that used to require entire agencies.",
+        learn: ["Design fundamentals — typography, color, composition","Using Midjourney and Adobe Firefly for image generation","Canva Pro for rapid branded content creation","Brand identity design and logo creation workflow"],
+        tools: ["Adobe Creative Suite with AI Sensei","Midjourney — text-to-image generation","Canva AI — templates and design automation","Figma — UI and brand design"],
+        why: "Every business needs visual content — social media, websites, marketing materials, presentations. Designers who can deliver fast, high-quality work using AI assistance are in massive demand across every industry.",
+        sal: ["₹3–6 LPA", "₹10–18 LPA", "₹28+ LPA"],
+        tags: ["Figma", "Adobe", "Midjourney", "Canva", "Brand Design"]
+      },
+      mental: {
+        emoji: "🧘", badge: "Wellness", badgeColor: "#06b6d4", badgeText: "#000",
+        title: "Mental Health & High Performance",
+        date: "June 5, 2026", readTime: "⏱ 7 min read",
+        intro: "Burnout has reached epidemic levels globally. But a growing movement of high performers has discovered that the real competitive advantage isn't working harder — it's protecting and optimizing your mental and physical health to perform at your peak consistently.",
+        learn: ["Sleep optimization and its impact on productivity","Focus techniques — deep work, time blocking, Pomodoro","Stress management and nervous system regulation","Building sustainable high-performance habits"],
+        tools: ["Headspace / Calm — guided meditation apps","Whoop / Oura Ring — health and recovery tracking","Books: Atomic Habits, Deep Work, Why We Sleep","BetterHelp — online therapy and counseling"],
+        why: "Companies are finally recognizing that burned-out employees produce poor work and quit. Organizations are hiring wellness coaches and paying premiums for people who can teach high-performance habits to teams.",
+        sal: ["Personal skill — priceless productivity gains", "Wellness coaches: ₹6–15 LPA", "Corporate wellness consultants: ₹20+ LPA"],
+        tags: ["Mindfulness", "Productivity", "Sleep", "Habits", "Mental Fitness"]
+      }
+    };
+
+    function openModal(key) {
+      const s = skills[key];
+      if (!s) return;
+      document.getElementById('mEmoji').textContent = s.emoji;
+      const badge = document.getElementById('mBadge');
+      badge.textContent = s.badge;
+      badge.style.background = s.badgeColor;
+      badge.style.color = s.badgeText;
+      document.getElementById('mTitle').textContent = s.title;
+      document.getElementById('mDate').textContent = s.date;
+      document.getElementById('mReadTime').textContent = s.readTime;
+      document.getElementById('mIntro').textContent = s.intro;
+      document.getElementById('mLearn').innerHTML = s.learn.map(i => `<li>${i}</li>`).join('');
+      document.getElementById('mTools').innerHTML = s.tools.map(i => `<li>${i}</li>`).join('');
+      document.getElementById('mWhy').textContent = s.why;
+      document.getElementById('mSal1').textContent = s.sal[0];
+      document.getElementById('mSal2').textContent = s.sal[1];
+      document.getElementById('mSal3').textContent = s.sal[2];
+      document.getElementById('mTags').innerHTML = s.tags.map(t => `<span class="modal-tag">${t}</span>`).join('');
+      document.getElementById('modalOverlay').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      document.getElementById('modalOverlay').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    function closeOnOverlay(e) {
+      if (e.target === document.getElementById('modalOverlay')) closeModal();
+    }
+
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+  </script>
+<p style="text-align:center; padding:1rem; color:#888; font-size:0.8rem; letter-spacing:2px; text-transform:uppercase; border-top:1px solid #2a2a2a;">Made by <span style="color:#e8ff3c; font-weight:700;">Khushdil Ahmad</span></p>
+</body>
+</html>
