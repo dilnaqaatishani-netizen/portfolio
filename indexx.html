@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TypingTech — Practice Typing, Track Your Speed</title>
+<meta name="description" content="Free typing practice tool. Test your words per minute, track accuracy, and improve your typing speed with real-time feedback.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<!--
+  Google AdSense
+  Replace ca-pub-XXXXXXXXXXXXXXXX with your own publisher ID once approved.
+  Three ad slots are already placed in the HTML below — marked with AD SLOT comments.
+-->
+<!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
+
+<style>
+  :root{
+    --ink: #1A2333;
+    --ink-soft: #232E45;
+    --paper: #F7F4ED;
+    --paper-dim: #ECE8DD;
+    --yellow: #E8B339;
+    --green: #3DDC84;
+    --red: #E85D5D;
+    --slate: #8A93A6;
+    --slate-dark: #5B6477;
+    --border: rgba(247,244,237,0.12);
+    --radius: 10px;
+    --max-w: 880px;
+  }
+
+  *{ box-sizing: border-box; }
+
+  html{ scroll-behavior: smooth; }
+
+  body{
+    margin:0;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+  }
+
+  a{ color: inherit; text-decoration: none; }
+
+  .wrap{
+    max-width: var(--max-w);
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ---------- Header ---------- */
+  header{
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    background: rgba(26,35,51,0.92);
+    backdrop-filter: blur(8px);
+    z-index: 50;
+  }
+
+  .nav{
+    max-width: var(--max-w);
+    margin: 0 auto;
+    padding: 18px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .logo{
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 1.25rem;
+    letter-spacing: -0.02em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .logo .dot{
+    width: 9px; height: 9px;
+    background: var(--yellow);
+    border-radius: 2px;
+    display: inline-block;
+    transform: rotate(45deg);
+  }
+
+  .nav-links{
+    display: flex;
+    gap: 28px;
+    font-size: 0.92rem;
+    color: var(--slate);
+  }
+
+  .nav-links a:hover{ color: var(--paper); }
+
+  @media (max-width: 640px){
+    .nav-links{ display:none; }
+  }
+
+  /* ---------- Hero / Typing zone ---------- */
+  .hero{
+    padding: 56px 0 28px;
+  }
+
+  .eyebrow{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--yellow);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+
+  h1{
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(2rem, 5vw, 2.9rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin: 0 0 12px;
+    max-width: 600px;
+  }
+
+  .sub{
+    color: var(--slate);
+    font-size: 1.02rem;
+    max-width: 480px;
+    margin: 0 0 32px;
+  }
+
+  /* Mode bar */
+  .mode-bar{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 22px;
+    align-items: center;
+  }
+
+  .mode-group{
+    display: flex;
+    background: var(--ink-soft);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 4px;
+    gap: 2px;
+  }
+
+  .mode-btn{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82rem;
+    color: var(--slate);
+    background: none;
+    border: none;
+    padding: 7px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+  }
+
+  .mode-btn:hover{ color: var(--paper); }
+  .mode-btn.active{
+    background: var(--yellow);
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  /* Stats strip */
+  .stats-strip{
+    display: flex;
+    gap: 28px;
+    margin-bottom: 18px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .stat{
+    display: flex;
+    flex-direction: column;
+  }
+
+  .stat .num{
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: var(--paper);
+    line-height: 1.1;
+  }
+
+  .stat .label{
+    font-size: 0.7rem;
+    color: var(--slate);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-top: 2px;
+  }
+
+  .stat.timer .num{ color: var(--yellow); }
+
+  /* Typing box — the signature element */
+  .type-box{
+    background: var(--paper);
+    border-radius: var(--radius);
+    padding: 28px 26px;
+    position: relative;
+    box-shadow: 0 1px 0 rgba(247,244,237,0.06) inset, 0 14px 36px -18px rgba(0,0,0,0.6);
+    cursor: text;
+  }
+
+  .type-box.locked::after{
+    content: "Click here and start typing";
+    position: absolute;
+    inset: 0;
+    background: rgba(247,244,237,0.94);
+    color: var(--slate-dark);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius);
+  }
+
+  .type-text{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.32rem;
+    line-height: 1.85;
+    letter-spacing: 0.01em;
+    color: var(--ink);
+    user-select: none;
+  }
+
+  .type-text .char{
+    position: relative;
+    padding: 0 1px;
+    border-radius: 3px;
+    color: var(--slate-dark);
+    transition: background 0.08s, color 0.08s;
+  }
+
+  .type-text .char.correct{ color: var(--ink); background: rgba(61,220,132,0.18); }
+  .type-text .char.incorrect{ color: var(--red); background: rgba(232,93,93,0.18); text-decoration: underline wavy var(--red); }
+  .type-text .char.current{ background: var(--yellow); color: var(--ink); border-radius: 3px; }
+  .type-text .char.current::after{
+    content: "";
+  }
+
+  .hidden-input{
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+    height: 0; width: 0;
+  }
+
+  .type-box-foot{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 18px;
+    padding-top: 0;
+  }
+
+  .restart-btn{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--slate);
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 8px 14px;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
+  }
+
+  .restart-btn:hover{ border-color: var(--yellow); color: var(--paper); }
+
+  .hint{
+    font-size: 0.78rem;
+    color: var(--slate);
+  }
+
+  .hint kbd{
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--ink-soft);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-size: 0.74rem;
+  }
+
+  /* Results panel */
+  .results{
+    display: none;
+    background: var(--ink-soft);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px;
+    margin-top: 18px;
+  }
+
+  .results.show{ display: block; }
+
+  .results h3{
+    font-family: 'Space Grotesk', sans-serif;
+    margin: 0 0 18px;
+    font-size: 1.15rem;
+  }
+
+  .results-grid{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+
+  @media (max-width: 640px){
+    .results-grid{ grid-template-columns: repeat(2, 1fr); }
+  }
+
+  .results-grid .stat .num{ font-size: 1.9rem; }
+
+  /* ---------- Sections ---------- */
+  section{ padding: 64px 0; }
+
+  .section-head{
+    margin-bottom: 36px;
+  }
+
+  .section-head .eyebrow{ margin-bottom: 10px; }
+
+  h2{
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.7rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin: 0 0 10px;
+  }
+
+  .section-head p{
+    color: var(--slate);
+    max-width: 460px;
+    margin: 0;
+  }
+
+  /* How it works — keyboard row metaphor instead of generic 01/02/03 */
+  .row-cards{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  @media (max-width: 760px){
+    .row-cards{ grid-template-columns: 1fr; }
+  }
+
+  .row-card{
+    background: var(--ink-soft);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px 20px;
+  }
+
+  .row-card .key{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--ink);
+    background: var(--yellow);
+    width: 30px; height: 30px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 14px;
+    font-weight: 600;
+  }
+
+  .row-card h4{
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.02rem;
+    margin: 0 0 8px;
+  }
+
+  .row-card p{
+    color: var(--slate);
+    font-size: 0.92rem;
+    margin: 0;
+  }
+
+  /* Leaderboard / progress strip (mock, local only) */
+  .progress-table{
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+  }
+
+  .progress-table th{
+    text-align: left;
+    color: var(--slate);
+    font-weight: 500;
+    font-size: 0.76rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0 0 10px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .progress-table td{
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .progress-table tr:last-child td{ border-bottom: none; }
+
+  .empty-row td{
+    color: var(--slate);
+    font-family: 'Inter', sans-serif;
+    padding: 20px 0;
+  }
+
+  /* Ad slots */
+  .ad-slot{
+    background: var(--ink-soft);
+    border: 1px dashed var(--border);
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--slate);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.74rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    min-height: 90px;
+    margin: 48px 0;
+  }
+
+  .ad-slot.leaderboard{ min-height: 90px; }
+  .ad-slot.in-feed{ min-height: 120px; }
+
+  /* FAQ */
+  .faq-item{
+    border-bottom: 1px solid var(--border);
+    padding: 18px 0;
+  }
+
+  .faq-item summary{
+    cursor: pointer;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    font-size: 1rem;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .faq-item summary::-webkit-details-marker{ display: none; }
+
+  .faq-item summary::after{
+    content: "+";
+    font-size: 1.3rem;
+    color: var(--slate);
+    margin-left: 12px;
+  }
+
+  .faq-item[open] summary::after{ content: "−"; }
+
+  .faq-item p{
+    color: var(--slate);
+    margin: 12px 0 0;
+    font-size: 0.92rem;
+    max-width: 600px;
+  }
+
+  /* Footer */
+  footer{
+    border-top: 1px solid var(--border);
+    padding: 32px 0 40px;
+    color: var(--slate);
+    font-size: 0.85rem;
+  }
+
+  .footer-row{
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+
+  .footer-links{
+    display: flex;
+    gap: 18px;
+  }
+
+  .footer-links a:hover{ color: var(--paper); }
+
+  /* Focus visibility */
+  button:focus-visible, summary:focus-visible{
+    outline: 2px solid var(--yellow);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ transition: none !important; scroll-behavior: auto !important; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav">
+    <div class="logo"><span class="dot"></span>TypingTech</div>
+    <nav class="nav-links">
+      <a href="#test">Practice</a>
+      <a href="#how">How it works</a>
+      <a href="#progress">Your progress</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ===== HERO + TYPING TEST ===== -->
+  <section class="hero" id="test">
+    <div class="eyebrow">// free typing practice</div>
+    <h1>Type faster. Type cleaner. See it happen live.</h1>
+    <p class="sub">No sign-up. Pick a mode, start typing, and watch your speed and accuracy update in real time.</p>
+
+    <div class="mode-bar">
+      <div class="mode-group" id="time-group">
+        <button class="mode-btn active" data-time="15">15s</button>
+        <button class="mode-btn" data-time="30">30s</button>
+        <button class="mode-btn" data-time="60">60s</button>
+        <button class="mode-btn" data-time="120">120s</button>
+      </div>
+      <div class="mode-group" id="content-group">
+        <button class="mode-btn active" data-mode="words">Words</button>
+        <button class="mode-btn" data-mode="quotes">Quotes</button>
+        <button class="mode-btn" data-mode="numbers">Numbers</button>
+      </div>
+    </div>
+
+    <div class="stats-strip">
+      <div class="stat timer"><span class="num" id="stat-time">15</span><span class="label">Seconds left</span></div>
+      <div class="stat"><span class="num" id="stat-wpm">0</span><span class="label">WPM</span></div>
+      <div class="stat"><span class="num" id="stat-acc">100%</span><span class="label">Accuracy</span></div>
+      <div class="stat"><span class="num" id="stat-errors">0</span><span class="label">Errors</span></div>
+    </div>
+
+    <div class="type-box locked" id="type-box">
+      <div class="type-text" id="type-text"></div>
+      <input class="hidden-input" id="hidden-input" autocomplete="off" autocapitalize="off" spellcheck="false">
+    </div>
+
+    <div class="type-box-foot">
+      <button class="restart-btn" id="restart-btn">↻ Restart (or press Tab)</button>
+      <div class="hint">Click the box, then just start typing — <kbd>Esc</kbd> to reset</div>
+    </div>
+
+    <div class="results" id="results">
+      <h3>Run complete</h3>
+      <div class="results-grid">
+        <div class="stat"><span class="num" id="res-wpm">0</span><span class="label">Words / min</span></div>
+        <div class="stat"><span class="num" id="res-acc">0%</span><span class="label">Accuracy</span></div>
+        <div class="stat"><span class="num" id="res-chars">0</span><span class="label">Characters typed</span></div>
+        <div class="stat"><span class="num" id="res-best">0</span><span class="label">Your best WPM</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AD SLOT 1 — below the fold of the main tool, high engagement spot -->
+  <div class="ad-slot leaderboard">
+    Advertisement
+    <!--
+      <ins class="adsbygoogle"
+        style="display:block; width:100%;"
+        data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+        data-ad-slot="1111111111"
+        data-ad-format="horizontal"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    -->
+  </div>
+
+  <!-- ===== HOW IT WORKS ===== -->
+  <section id="how">
+    <div class="section-head">
+      <div class="eyebrow">// the method</div>
+      <h2>Three habits, not three steps</h2>
+      <p>Typing speed isn't a tutorial you finish — it's a handful of habits you repeat until they're automatic.</p>
+    </div>
+    <div class="row-cards">
+      <div class="row-card">
+        <div class="key">⇧</div>
+        <h4>Find home row, stay there</h4>
+        <p>Your fingers rest on ASDF and JKL;. Every reach starts and ends here — your hands shouldn't drift.</p>
+      </div>
+      <div class="row-card">
+        <div class="key">↵</div>
+        <h4>Accuracy first, speed follows</h4>
+        <p>Slow and correct beats fast and wrong. A clean run rewires muscle memory faster than a rushed one.</p>
+      </div>
+      <div class="row-card">
+        <div class="key">⌫</div>
+        <h4>Don't look at your hands</h4>
+        <p>Glancing down breaks rhythm. Trust the keys — your eyes belong on the text, not the keyboard.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PROGRESS (local, client-side only) ===== -->
+  <section id="progress">
+    <div class="section-head">
+      <div class="eyebrow">// this session</div>
+      <h2>Your runs so far</h2>
+      <p>Saved locally in your browser — close the tab and it resets. No accounts, no tracking.</p>
+    </div>
+    <table class="progress-table" id="progress-table">
+      <thead>
+        <tr><th>Mode</th><th>Duration</th><th>WPM</th><th>Accuracy</th></tr>
+      </thead>
+      <tbody id="progress-body">
+        <tr class="empty-row"><td colspan="4">Finish a test above and it'll show up here.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- AD SLOT 2 — in-feed, between content sections -->
+  <div class="ad-slot in-feed">
+    Advertisement
+    <!--
+      <ins class="adsbygoogle"
+        style="display:block; width:100%;"
+        data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+        data-ad-slot="2222222222"
+        data-ad-format="auto"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    -->
+  </div>
+
+  <!-- ===== FAQ ===== -->
+  <section id="faq">
+    <div class="section-head">
+      <div class="eyebrow">// good to know</div>
+      <h2>Questions people actually ask</h2>
+    </div>
+
+    <details class="faq-item" open>
+      <summary>What's a good typing speed?</summary>
+      <p>Most people type 35–45 WPM casually. 60+ WPM is considered fast for office work, and 80+ puts you in professional-typist territory. Track your own baseline first — the goal is your improvement, not a universal number.</p>
+    </details>
+    <details class="faq-item">
+      <summary>Why does accuracy matter more than speed early on?</summary>
+      <p>If you train fast with mistakes, you're memorizing the mistakes. Slowing down until your fingers consistently hit the right keys builds the muscle memory that speed later relies on.</p>
+    </details>
+    <details class="faq-item">
+      <summary>Does this save my results?</summary>
+      <p>Your best WPM and recent runs are stored only in your browser's local storage. Nothing is sent to a server, and clearing your browser data will reset it.</p>
+    </details>
+    <details class="faq-item">
+      <summary>Can I use this on mobile?</summary>
+      <p>The page works on mobile, but typing tests are built around physical keyboards — you'll get far more useful practice on a laptop or desktop.</p>
+    </details>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap footer-row">
+    <div>© <span id="year"></span> TypingTech. Built for anyone with ten fingers and somewhere to be.</div>
+    <div class="footer-links">
+      <a href="#test">Practice</a>
+      <a href="#faq">FAQ</a>
+      <a href="#">Privacy</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  /* ---------------- Word banks ---------------- */
+  var WORDS = ["time","year","people","way","day","man","thing","woman","life","child","world","school",
+    "state","family","student","group","country","problem","hand","part","place","case","week","company",
+    "system","program","question","work","government","number","night","point","home","water","room",
+    "mother","area","money","story","fact","month","lot","right","study","book","eye","job","word",
+    "business","issue","side","kind","head","house","service","friend","father","power","hour","game",
+    "line","end","member","law","car","city","community","name","president","team","minute","idea",
+    "body","information","back","parent","face","others","level","office","door","health","person",
+    "art","war","history","party","result","change","morning","reason","research","girl","guy","moment",
+    "air","teacher","force","education","quick","brown","fox","jumps","lazy","dog","keyboard","practice",
+    "speed","accuracy","finger","letter","sentence","paragraph","focus","rhythm","habit","screen"];
+
+  var QUOTES = [
+    "The only way to do great work is to love what you do and keep showing up for it every single day.",
+    "Typing well is less about talent and more about repetition, patience, and a willingness to slow down first.",
+    "Every expert was once a beginner who refused to give up after the first hundred mistakes they made.",
+    "Good things come to those who type, but better things come to those who type accurately and with care.",
+    "Speed is what happens automatically once your fingers stop thinking and your eyes stop checking the keys.",
+    "Practice does not make perfect, practice makes permanent, so practice the right habit from the very start."
+  ];
+
+  function generateWords(count){
+    var out = [];
+    for(var i=0;i<count;i++){
+      out.push(WORDS[Math.floor(Math.random()*WORDS.length)]);
+    }
+    return out.join(' ');
+  }
+
+  function generateNumbers(count){
+    var out = [];
+    for(var i=0;i<count;i++){
+      var len = 2 + Math.floor(Math.random()*4);
+      var n = '';
+      for(var j=0;j<len;j++){ n += Math.floor(Math.random()*10); }
+      out.push(n);
+    }
+    return out.join(' ');
+  }
+
+  function generateQuote(){
+    return QUOTES[Math.floor(Math.random()*QUOTES.length)];
+  }
+
+  /* ---------------- State ---------------- */
+  var state = {
+    duration: 15,
+    mode: 'words',
+    text: '',
+    pos: 0,
+    correctCount: 0,
+    incorrectCount: 0,
+    totalKeystrokes: 0,
+    started: false,
+    finished: false,
+    timer: null,
+    timeLeft: 15,
+    charNodes: []
+  };
+
+  var typeBox = document.getElementById('type-box');
+  var typeText = document.getElementById('type-text');
+  var hiddenInput = document.getElementById('hidden-input');
+  var results = document.getElementById('results');
+
+  var statTime = document.getElementById('stat-time');
+  var statWpm = document.getElementById('stat-wpm');
+  var statAcc = document.getElementById('stat-acc');
+  var statErrors = document.getElementById('stat-errors');
+
+  function wordCountForDuration(d, mode){
+    if(mode === 'quotes') return null; // quotes are fixed-length
+    var base = { 15: 12, 30: 22, 60: 40, 120: 75 };
+    return base[d] || 22;
+  }
+
+  function buildText(){
+    if(state.mode === 'words'){
+      return generateWords(wordCountForDuration(state.duration, 'words'));
+    }else if(state.mode === 'numbers'){
+      return generateNumbers(wordCountForDuration(state.duration, 'numbers'));
+    }else{
+      return generateQuote();
+    }
+  }
+
+  function renderText(){
+    typeText.innerHTML = '';
+    state.charNodes = [];
+    var chars = state.text.split('');
+    chars.forEach(function(ch, i){
+      var span = document.createElement('span');
+      span.className = 'char';
+      span.textContent = ch;
+      typeText.appendChild(span);
+      state.charNodes.push(span);
+    });
+    if(state.charNodes.length){
+      state.charNodes[0].classList.add('current');
+    }
+  }
+
+  function resetTest(keepMode){
+    clearInterval(state.timer);
+    state.text = buildText();
+    state.pos = 0;
+    state.correctCount = 0;
+    state.incorrectCount = 0;
+    state.totalKeystrokes = 0;
+    state.started = false;
+    state.finished = false;
+    state.timeLeft = state.duration;
+    renderText();
+    statTime.textContent = state.timeLeft;
+    statWpm.textContent = '0';
+    statAcc.textContent = '100%';
+    statErrors.textContent = '0';
+    results.classList.remove('show');
+    typeBox.classList.add('locked');
+    hiddenInput.value = '';
+  }
+
+  function startTimer(){
+    state.timer = setInterval(function(){
+      state.timeLeft--;
+      statTime.textContent = state.timeLeft;
+      updateLiveStats();
+      if(state.timeLeft <= 0){
+        finishTest();
+      }
+    }, 1000);
+  }
+
+  function updateLiveStats(){
+    var elapsedMinutes = (state.duration - state.timeLeft) / 60;
+    if(elapsedMinutes <= 0){ elapsedMinutes = 1/60; }
+    var wpm = Math.round((state.correctCount / 5) / elapsedMinutes);
+    if(!isFinite(wpm) || wpm < 0) wpm = 0;
+    statWpm.textContent = wpm;
+
+    var totalTyped = state.correctCount + state.incorrectCount;
+    var acc = totalTyped > 0 ? Math.round((state.correctCount / totalTyped) * 100) : 100;
+    statAcc.textContent = acc + '%';
+    statErrors.textContent = state.incorrectCount;
+  }
+
+  function finishTest(){
+    clearInterval(state.timer);
+    state.finished = true;
+    typeBox.classList.add('locked');
+
+    var elapsedSeconds = state.duration - Math.max(state.timeLeft, 0);
+    if(elapsedSeconds <= 0) elapsedSeconds = state.duration;
+    var minutes = elapsedSeconds / 60;
+    var wpm = Math.round((state.correctCount / 5) / minutes) || 0;
+    var totalTyped = state.correctCount + state.incorrectCount;
+    var acc = totalTyped > 0 ? Math.round((state.correctCount / totalTyped) * 100) : 100;
+
+    document.getElementById('res-wpm').textContent = wpm;
+    document.getElementById('res-acc').textContent = acc + '%';
+    document.getElementById('res-chars').textContent = totalTyped;
+
+    var best = parseInt(localStorage.getItem('tt_best_wpm') || '0', 10);
+    if(wpm > best){
+      best = wpm;
+      localStorage.setItem('tt_best_wpm', String(best));
+    }
+    document.getElementById('res-best').textContent = best;
+
+    results.classList.add('show');
+    saveRun(state.mode, state.duration, wpm, acc);
+    renderProgress();
+  }
+
+  function saveRun(mode, duration, wpm, acc){
+    var runs = JSON.parse(localStorage.getItem('tt_runs') || '[]');
+    runs.unshift({ mode: mode, duration: duration, wpm: wpm, acc: acc, ts: Date.now() });
+    runs = runs.slice(0, 8);
+    localStorage.setItem('tt_runs', JSON.stringify(runs));
+  }
+
+  function renderProgress(){
+    var runs = JSON.parse(localStorage.getItem('tt_runs') || '[]');
+    var body = document.getElementById('progress-body');
+    if(!runs.length){
+      body.innerHTML = '<tr class="empty-row"><td colspan="4">Finish a test above and it\'ll show up here.</td></tr>';
+      return;
+    }
+    body.innerHTML = runs.map(function(r){
+      var modeLabel = r.mode.charAt(0).toUpperCase() + r.mode.slice(1);
+      return '<tr><td>'+modeLabel+'</td><td>'+r.duration+'s</td><td>'+r.wpm+'</td><td>'+r.acc+'%</td></tr>';
+    }).join('');
+  }
+
+  function handleTyping(){
+    var val = hiddenInput.value;
+
+    if(!state.started && val.length > 0){
+      state.started = true;
+      startTimer();
+    }
+
+    if(state.finished) return;
+
+    // Compare typed value against target text from position 0
+    var typedLen = val.length;
+
+    // Reset all nodes to neutral, then mark up to typedLen
+    state.correctCount = 0;
+    state.incorrectCount = 0;
+
+    for(var i = 0; i < state.charNodes.length; i++){
+      var node = state.charNodes[i];
+      node.classList.remove('correct','incorrect','current');
+      if(i < typedLen){
+        if(val[i] === state.text[i]){
+          node.classList.add('correct');
+          state.correctCount++;
+        }else{
+          node.classList.add('incorrect');
+          state.incorrectCount++;
+        }
+      }
+    }
+    if(typedLen < state.charNodes.length){
+      state.charNodes[typedLen].classList.add('current');
+    }
+
+    state.pos = typedLen;
+    updateLiveStats();
+
+    // finished all characters before time ran out
+    if(typedLen >= state.text.length){
+      finishTest();
+    }
+  }
+
+  /* ---------------- Event wiring ---------------- */
+  typeBox.addEventListener('click', function(){
+    typeBox.classList.remove('locked');
+    hiddenInput.focus();
+  });
+
+  hiddenInput.addEventListener('blur', function(){
+    if(!state.finished) typeBox.classList.add('locked');
+  });
+
+  hiddenInput.addEventListener('input', handleTyping);
+
+  hiddenInput.addEventListener('keydown', function(e){
+    if(e.key === 'Tab'){
+      e.preventDefault();
+      resetTest();
+    }
+    if(e.key === 'Escape'){
+      e.preventDefault();
+      resetTest();
+    }
+  });
+
+  document.getElementById('restart-btn').addEventListener('click', function(){
+    resetTest();
+    typeBox.classList.remove('locked');
+    hiddenInput.focus();
+  });
+
+  document.querySelectorAll('#time-group .mode-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      document.querySelectorAll('#time-group .mode-btn').forEach(function(b){ b.classList.remove('active'); });
+      btn.classList.add('active');
+      state.duration = parseInt(btn.dataset.time, 10);
+      resetTest();
+    });
+  });
+
+  document.querySelectorAll('#content-group .mode-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      document.querySelectorAll('#content-group .mode-btn').forEach(function(b){ b.classList.remove('active'); });
+      btn.classList.add('active');
+      state.mode = btn.dataset.mode;
+      resetTest();
+    });
+  });
+
+  /* ---------------- Init ---------------- */
+  resetTest();
+  renderProgress();
+
+})();
+</script>
+
+</body>
+</html>
